@@ -269,5 +269,36 @@ Screw.Unit(function() {
 				(new Aobj()).aFunction();
 			});
 		});	    
+	  
+	  describe("Smoke.Mock.Expectation", function() {
+	    describe(".parseCount", function() {
+        describe("when called with a string", function() {
+  	      it("should return 1 when called with 'once'", function() {
+  	        expect(Smoke.Mock.Expectation.prototype.parseCount('once')).to(equal, 1);
+  	      });
+
+  	      it("should return 2 when called with 'twice'", function() {
+  	        expect(Smoke.Mock.Expectation.prototype.parseCount('twice')).to(equal, 2);
+  	      });          
+
+        });
+        
+        describe("when called with a number", function() {
+          it("should return the number", function() {
+  	        expect(Smoke.Mock.Expectation.prototype.parseCount(1)).to(equal, 1);                        
+          }); 
+        }); 
+        
+        describe("when called when a value that cannot be explicitly conversed to a number", function() {
+          it("should throw a TypeError", function() {
+            try {
+              Smoke.Mock.Expectation.prototype.parseCount('test');
+            } catch(e) {
+              expect(e.name).to(equal, 'TypeError');
+            }
+          });          
+        });
+	    });
+	  });
 	});
 });
