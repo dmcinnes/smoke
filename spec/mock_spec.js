@@ -1,13 +1,24 @@
 Screw.Unit(function() {
-	describe("mocking", function() {	
-		describe("basics", function() {					
+	describe("mocking", function() {
+		describe("basics", function() {
 			it("allows stubbing directly on mock objects", function() {
-				mockObj = mock().stub('bar').and_return('baz');
+				var mockObj = mock().stub('bar').and_return('baz');
 				expect(mockObj.bar()).to(equal, 'baz');
 			});
+
+      it("doesn't set expectations on stubbed mock ojbects", function() {
+				var m = mock().stub('bar').and_return('baz');
+        try {
+          Smoke.checkExpectations();
+          throw("exception");
+        } catch(e) {
+          Smoke.reset();
+          expect(e).to(equal, 'exception');
+        }
+      });
 		
 			it("should check an exact call count", function() {
-				var m = mock()
+				var m = mock();
 				m.should_receive('bar').exactly('twice');
 				m.bar();
 				m.bar();
@@ -74,7 +85,7 @@ Screw.Unit(function() {
 			});
       
 			it("should throw an arguments mismatched error if the arguments aren't matched", function() {
-				mockObj = mock()
+				mockObj = mock();
 				mockObj.should_receive('foo').with_arguments('bar').and_return('foobar'); 
 				try { 
 				  mockObj.foo('chicken'); 
@@ -83,17 +94,31 @@ Screw.Unit(function() {
 				}
 			});
 			it("should allow mocking multiple method signatures with different returns", function() {
-				mockObj = mock()
+				mockObj = mock();
 				mockObj.should_receive('foo').with_arguments('bar').and_return('foobar'); 
 				mockObj.should_receive('foo').with_arguments('mouse').and_return('cheese');
 				expect(mockObj.foo('mouse')).to(equal, 'cheese');
 				expect(mockObj.foo('bar')).to(equal, 'foobar');
 			});
 			it("should allow mocking a method signature with arguments and setting expectations", function() {
-				mockObj = mock()
+				mockObj = mock();
 				mockObj.should_receive('foo').with_arguments('bar').exactly('once');
 				mockObj.foo('bar')
 			});
+      it("allows mocking of multiple methods on the same object", function() {
+				mockObj = mock();
+				mockObj.should_receive('foo').with_arguments('dog').and_return('cat'); 
+				mockObj.should_receive('bar').with_arguments('mouse').and_return('cheese');
+				expect(mockObj.bar('mouse')).to(equal, 'cheese');
+				expect(mockObj.foo('dog')).to(equal, 'cat');
+      });
+      it("should work with existing stubs", function () {
+				mockObj = mock();
+        mockObj.stub('foo').and_return('bar');
+				mockObj.should_receive('foo').with_arguments('furble').and_return('baz'); 
+				expect(mockObj.foo('something else')).to(equal, 'bar');
+				expect(mockObj.foo('furble')).to(equal, 'baz');
+      });
 		});
 		
 		describe("added on top of an existing object", function() {
