@@ -109,6 +109,14 @@ Screw.Unit(function() {
         it("should return false if the two objects with mixed types are not equal", function() {
           expect(Smoke.compare(object, { foo: [1,2,3], bar: 'foo', two: 3 })).to(equal, false);
         });
+
+        it("returns false if the first of the two objects is undefined", function() {
+          expect(Smoke.compare(undefined, object)).to(equal, false);
+        });
+
+        it("returns false if the second of the two objects is undefined", function() {
+          expect(Smoke.compare(object, undefined)).to(equal, false);
+        });
       })
     });    
 	});
