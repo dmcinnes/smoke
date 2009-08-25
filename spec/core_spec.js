@@ -90,6 +90,15 @@ Screw.Unit(function() {
         it("should return false if the two number are not equal", function() {
           expect(Smoke.compare(number, 2)).to(equal, false);
         });
+
+        it("returns false if one of the parameters is undefined", function() {
+          expect(Smoke.compare(string, undefined)).to(equal, false);
+          expect(Smoke.compare(undefined, string)).to(equal, false);
+        });
+
+        it("returns false if the object types do not match", function() {
+          expect(Smoke.compare({foo: 'foo'}, ['foo'])).to(equal, false);
+        });
       })
 
       describe("with mixed types", function() {
@@ -108,14 +117,6 @@ Screw.Unit(function() {
 
         it("should return false if the two objects with mixed types are not equal", function() {
           expect(Smoke.compare(object, { foo: [1,2,3], bar: 'foo', two: 3 })).to(equal, false);
-        });
-
-        it("returns false if the first of the two objects is undefined", function() {
-          expect(Smoke.compare(undefined, object)).to(equal, false);
-        });
-
-        it("returns false if the second of the two objects is undefined", function() {
-          expect(Smoke.compare(object, undefined)).to(equal, false);
         });
       })
     });    
